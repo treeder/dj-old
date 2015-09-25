@@ -27,7 +27,7 @@ docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app 
 # test image
 docker run --rm -p 8080:8080 username/goapp
 # push image
-docker push username/myapp
+docker push username/goapp
 ```
 
 ### Ruby:
@@ -44,7 +44,7 @@ docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app 
 # test image
 docker run --rm -p 8080:8080 username/rubyapp
 # push image
-docker push username/myapp
+docker push username/rubyapp
 ```
 
 ### Node:
@@ -59,7 +59,7 @@ docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app 
 # test image
 docker run --rm -p 8080:8080 username/nodeapp
 # push image
-docker push username/myapp
+docker push username/nodeapp
 ```
 
 ### Python:
@@ -68,13 +68,13 @@ docker push username/myapp
 # vendor
 docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj python vendor
 # test
-docker run --rm -v "$PWD":/worker -w /worker iron/node node hello.js
+docker run --rm -v "$PWD":/worker -w /worker iron/python python hello.py
 # build image - hello.rb on the end is the script to run
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj node image username/nodeapp:latest hello.js
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj node image username/pythonapp:latest hello.py
 # test image
-docker run --rm -p 8080:8080 username/nodeapp
+docker run --rm -p 8080:8080 username/pythonapp
 # push image
-docker push username/myapp
+docker push username/pythonapp
 ```
 
 ### PHP:

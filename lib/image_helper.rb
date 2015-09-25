@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module Devo
   class ImageHelper
     def self.build1(from, entry, args)

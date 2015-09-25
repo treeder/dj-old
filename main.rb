@@ -3,6 +3,7 @@ require 'json'
 require_relative 'lib/image_helper'
 require_relative 'lib/ruby_helper'
 require_relative 'lib/node_helper'
+require_relative 'lib/python_helper'
 
 # p ARGV
 # puts "pwd: #{Dir.pwd}"
@@ -86,6 +87,9 @@ when 'ruby'
   end
 when 'node'
   helper = Devo::NodeHelper.new
+  helper.run(ARGV)
+when 'python'
+  helper = Devo::PythonHelper.new
   helper.run(ARGV)
 else
   raise "Language not supported."
