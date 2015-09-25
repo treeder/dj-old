@@ -36,18 +36,65 @@ NOTE: You must add `require_relative 'bundle/bundler/setup'` to the start of Rub
 
 ```sh
 # vendor
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj ruby bundle
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj ruby vendor
 # test
 docker run --rm -it -v "$PWD":/app -w /app iron/ruby ruby hello.rb
 # build image - hello.rb on the end is the script to run
 docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj ruby image username/rubyapp:latest hello.rb
 # test image
 docker run --rm -p 8080:8080 username/rubyapp
-# push image 
+# push image
 docker push username/myapp
 ```
 
-Node:
+### Node:
+
+```sh
+# vendor
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj node vendor
+# test
+docker run --rm -v "$PWD":/worker -w /worker iron/node node hello.js
+# build image - hello.rb on the end is the script to run
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj node image username/nodeapp:latest hello.js
+# test image
+docker run --rm -p 8080:8080 username/nodeapp
+# push image
+docker push username/myapp
+```
+
+### Python:
+
+```sh
+# vendor
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj python vendor
+# test
+docker run --rm -v "$PWD":/worker -w /worker iron/node node hello.js
+# build image - hello.rb on the end is the script to run
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj node image username/nodeapp:latest hello.js
+# test image
+docker run --rm -p 8080:8080 username/nodeapp
+# push image
+docker push username/myapp
+```
+
+### PHP:
+
+```sh
+# vendor
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj node vendor
+# test
+docker run --rm -v "$PWD":/worker -w /worker iron/node node hello.js
+# build image - hello.rb on the end is the script to run
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj node image username/nodeapp:latest hello.js
+# test image
+docker run --rm -p 8080:8080 username/nodeapp
+# push image
+docker push username/myapp
+```
+
+
+
+
 
 
 

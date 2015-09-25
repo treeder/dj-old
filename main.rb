@@ -1,6 +1,8 @@
 require 'open3'
 require 'json'
-require_relative 'ruby_helper'
+require_relative 'lib/image_helper'
+require_relative 'lib/ruby_helper'
+require_relative 'lib/node_helper'
 
 # p ARGV
 # puts "pwd: #{Dir.pwd}"
@@ -19,13 +21,25 @@ if ARGV.length < 1
   puts "No command provided."
 end
 
-
 module Devo
-  def self.docker_exec(cmd, args)
-    maincmd = "run --rm -i #{@volumes} -w /app".split
-    split = cmd.split(' ')
-    puts (maincmd + split + args).join(' ')
-    Open3.popen2e('docker', *(maincmd + split + args)) {|i,oe,t|
+  @@volumes = nil
+
+  def self.volumes=(x)
+    @@foo = x
+  end
+
+  def self.volumes
+    @@foo
+  end
+
+  def self.docker_exec(image, args=[])
+    maincmd = "run --rm -i #{Devo.volumes} -w /app".split
+    maincmd << image
+    if args.is_a?(String)
+      args = args.split(' ')
+    end
+    puts (maincmd + args).join(' ')
+    Open3.popen2e('docker', *(maincmd + args)) {|i,oe,t|
       pid = t.pid # pid of the started process.
       i.close # ensure this exits when it's done with output
       oe.each {|line|
@@ -57,6 +71,8 @@ module Devo
   end
 end
 
+Devo.volumes = @volumes
+
 lang = ARGV.shift
 case lang
 when 'go'
@@ -68,6 +84,9 @@ when 'ruby'
   else
     Devo.docker_exec "treeder/ruby", ARGV
   end
+when 'node'
+  helper = Devo::NodeHelper.new
+  helper.run(ARGV)
 else
-  puts "Invalid command, see https://github.com/treeder/dockers/tree/master/go for reference."
+  raise "Language not supported."
 end
