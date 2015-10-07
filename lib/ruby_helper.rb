@@ -1,11 +1,28 @@
 
 module Devo
   class RubyHelper
-    def image(args=[])
-      if args.length < 2
-        raise "devo: image command requires image name and ruby script to run."
+
+    def run(args=[])
+      if args.length < 1
+        raise "devo ruby: invalid args."
       end
-      ImageHelper.build1('iron/ruby', 'ruby', args)
+      case args[0]
+      when 'bundle', 'vendor'
+        cmd = "install --standalone --clean"
+        if args[1] == "update"
+          cmd = "update"
+        end
+        Devo.docker_exec("iron/ruby:dev", "bundle config build.nokogiri --use-system-libraries && bundle #{cmd}")
+        Devo.exec("chmod -R a+rw bundle")
+        Devo.exec("chmod -R a+rw .bundle")
+      when 'run'
+        Devo.docker_exec("iron/ruby", "ruby #{args[1]}")
+      when 'image'
+        Devo::ImageHelper.build1('iron/ruby', 'ruby', args[1..args.length])
+      else
+        raise "Invalid ruby command: #{args[0]}"
+      end
+
     end
   end
 end

@@ -38,7 +38,7 @@ NOTE: You must add `require_relative 'bundle/bundler/setup'` to the start of Rub
 # vendor
 docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj ruby vendor
 # test
-docker run --rm -it -v "$PWD":/app -w /app iron/ruby ruby hello.rb
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj ruby run hello.rb
 # build image - hello.rb on the end is the script to run
 docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj ruby image username/rubyapp:latest hello.rb
 # test image
@@ -81,22 +81,24 @@ docker push username/pythonapp
 
 ```sh
 # vendor
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj node vendor
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj php vendor
 # test
-docker run --rm -v "$PWD":/worker -w /worker iron/node node hello.js
+docker run --rm -v "$PWD":/worker -w /worker iron/php php hello.php
 # build image - hello.rb on the end is the script to run
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj node image username/nodeapp:latest hello.js
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj php image username/phpapp:latest hello.php
 # test image
-docker run --rm -p 8080:8080 username/nodeapp
+docker run --rm -p 8080:8080 username/phpapp
 # push image
-docker push username/myapp
+docker push username/phpapp
 ```
 
 
 
 
 
+## Troubleshooting
 
+### Go
 
 You may need to add more options if you have subdirectory imports:
 
@@ -107,22 +109,9 @@ docker run --rm -it -v "$PWD":/app -w /app -e "SRCPATH=github.com/username/repon
 The SRCPATH should match your local import statements. Only required if you have subdirectories in the current repository
 that you are using in imports.
 
-### Build:
-
-```sh
-docker run --rm -v "$PWD":/app -w /app treeder/go build
-```
-
-### Run:
-
-This is just a normal Docker run. I'm using iron/base here because it's a tiny image that has
-everything you need to run your Go binary on.
-
-```sh
-docker run --rm -v "$PWD":/app -w /app -p 8080:8080 iron/base ./app
-```
-
 ## Advanced Commands
+
+NOTE: These are for the go image only, we'll add extras for other languages soon.
 
 ### Build a remote git repo:
 
@@ -133,24 +122,6 @@ docker run --rm -v "$PWD":/app -w /app treeder/go remote https://github.com/tree
 ```
 
 You'll end up with a binary called `app` which you can run with the same command as above.
-
-### Build a Docker image out of your program:
-
-This will build a Docker image with your program inside it.
-
-The argument after image is `IMAGE_NAME:tag`. Also, note the extra mount here, that's required to talk to the Docker host.
-
-```sh
-docker run --rm -v "$PWD":/app -w /app -v /var/run/docker.sock:/var/run/docker.sock treeder/go image username/myapp:latest
-```
-
-Boom, creates a small Docker image for you. Run `docker images` to check it out, should be about ~12MB total.
-
-Test your new image:
-
-```sh
-docker run --rm -v "$PWD":/app -w /app -p 8080:8080 username/myapp
-```
 
 ### Cross compile:
 
@@ -208,7 +179,7 @@ docker build -t devo/dj:latest .
 Tag it with Go version too (can check with `docker run --rm treeder/go version`):
 
 ```sh
-docker tag treeder/go:latest treeder/go:1.4.2
+docker tag devo/dj:latest devo/dj:$(cat version.txt)
 ```
 
 Push:

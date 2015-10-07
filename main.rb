@@ -4,6 +4,7 @@ require_relative 'lib/image_helper'
 require_relative 'lib/ruby_helper'
 require_relative 'lib/node_helper'
 require_relative 'lib/python_helper'
+require_relative 'lib/php_helper'
 
 # p ARGV
 # puts "pwd: #{Dir.pwd}"
@@ -37,10 +38,11 @@ module Devo
     maincmd = "run --rm -i #{Devo.volumes} -w /app".split
     maincmd << image
     if args.is_a?(String)
-      args = args.split(' ')
+#      args = args.split(' ')
     end
-    puts (maincmd + args).join(' ')
-    Open3.popen2e('docker', *(maincmd + args)) {|i,oe,t|
+    maincmd << "sh" << "-c" << args
+    puts (maincmd ).join(' ')
+    Open3.popen2e('docker', *(maincmd)) {|i,oe,t|
       pid = t.pid # pid of the started process.
       i.close # ensure this exits when it's done with output
       oe.each {|line|
@@ -80,16 +82,15 @@ when 'go'
   Devo.docker_exec "treeder/go", ARGV
 when 'ruby'
   helper = Devo::RubyHelper.new
-  if ARGV[0] == 'image'
-    helper.image(ARGV[1..ARGV.length])
-  else
-    Devo.docker_exec "treeder/ruby", ARGV
-  end
+  helper.run(ARGV)
 when 'node'
   helper = Devo::NodeHelper.new
   helper.run(ARGV)
 when 'python'
   helper = Devo::PythonHelper.new
+  helper.run(ARGV)
+when 'php'
+  helper = Devo::PhpHelper.new
   helper.run(ARGV)
 else
   raise "Language not supported."
