@@ -13,21 +13,50 @@ This image can perform the following functions:
 
 ## Usage
 
-### Go:
+The usage is the same for all languages, that's the beauty of this!
+
+First, to simplify things, add this to your bashrc:
+
+```
+dj() {
+  docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -v $HOME:/root:ro -w /app -p 8080:8080 devo/dj $@
+}
+```
+
+### ALL languages
+
+Replace the language of your choice in the commands below from this list:
+
+* go
+* ruby
+* node
+* php
+* python
+
+Here are the main commands you'll use:
 
 ```sh
 # vendor
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj go vendor
-# build
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj go build
+dj LANG vendor
 # test
-docker run --rm -it -v "$PWD":/app -w /app iron/base ./app
-# build image
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj go image username/goapp:latest
+dj LANG run [script.abc]
+# build Docker image
+dj LANG image username/myapp:latest
 # test image
-docker run --rm -p 8080:8080 username/goapp
-# push image
-docker push username/goapp
+docker run --rm -p 8080:8080 username/myapp [script.abc]
+# push image to docker hub
+docker push username/myapp
+```
+
+`script.abc` is for interpreted languages, for example: `dj ruby run hello.rb`
+
+### Go specific commands
+
+```sh
+# build, run already does this, but if you just want to build without running:
+dj go build
+# fmt
+dj go fmt
 ```
 
 ### Ruby:
@@ -35,62 +64,23 @@ docker push username/goapp
 NOTE: You must add `require_relative 'bundle/bundler/setup'` to the start of Ruby program/script.
 
 ```sh
-# vendor
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj ruby vendor
-# test
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj ruby run hello.rb
+# run
+dj ruby run hello.rb
 # build image - hello.rb on the end is the script to run
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj ruby image username/rubyapp:latest hello.rb
-# test image
-docker run --rm -p 8080:8080 username/rubyapp
-# push image
-docker push username/rubyapp
+dj ruby image username/rubyapp:latest hello.rb
 ```
 
 ### Node:
 
-```sh
-# vendor
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj node vendor
-# test
-docker run --rm -v "$PWD":/worker -w /worker iron/node node hello.js
-# build image - hello.rb on the end is the script to run
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj node image username/nodeapp:latest hello.js
-# test image
-docker run --rm -p 8080:8080 username/nodeapp
-# push image
-docker push username/nodeapp
-```
+Nothing special.
 
 ### Python:
 
-```sh
-# vendor
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj python vendor
-# test
-docker run --rm -v "$PWD":/worker -w /worker iron/python python hello.py
-# build image - hello.rb on the end is the script to run
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj node image username/pythonapp:latest hello.py
-# test image
-docker run --rm -p 8080:8080 username/pythonapp
-# push image
-docker push username/pythonapp
-```
+Nothing special.
 
 ### PHP:
 
-```sh
-# vendor
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj php vendor
-# test
-docker run --rm -v "$PWD":/worker -w /worker iron/php php hello.php
-# build image - hello.rb on the end is the script to run
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -w /app devo/dj php image username/phpapp:latest hello.php
-# test image
-docker run --rm -p 8080:8080 username/phpapp
-# push image
-docker push username/phpapp
-```
+Nothing special.
 
 
 
@@ -98,77 +88,8 @@ docker push username/phpapp
 
 ## Troubleshooting
 
-### Go
+TODO:
 
-You may need to add more options if you have subdirectory imports:
-
-```sh
-docker run --rm -it -v "$PWD":/app -w /app -e "SRCPATH=github.com/username/reponame" treeder/go vendor
-```
-
-The SRCPATH should match your local import statements. Only required if you have subdirectories in the current repository
-that you are using in imports.
-
-## Advanced Commands
-
-NOTE: These are for the go image only, we'll add extras for other languages soon.
-
-### Build a remote git repo:
-
-This produces a binary given a remote git repo containing a Go program.
-
-```sh
-docker run --rm -v "$PWD":/app -w /app treeder/go remote https://github.com/treeder/hello-app.go.git
-```
-
-You'll end up with a binary called `app` which you can run with the same command as above.
-
-### Cross compile:
-
-This uses a different image, treeder/go-cross, to do a cross compile.
-
-```sh
-docker run --rm -v "$PWD":/app -w /app treeder/go-cross cross
-```
-
-### Build static binary:
-
-This is great for making the [tiniest Docker image possible](http://www.iron.io/blog/2015/07/an-easier-way-to-create-tiny-golang-docker-images.html)
-
-```sh
-docker run --rm -v "$PWD":/app -w /app treeder/go static
-```
-
-### Check Go version:
-
-```sh
-docker run --rm treeder/go version
-```
-
-## Wrapper Script
-
-We've provided a [`wrapper.sh` script](./wrapper.sh) to make running each command
-more convenient.
-
-To use it, download it and put it in your `$PATH`. Then, create an alias for it
-by pasting the following into your shell config file (e.g. `.bashrc`, `.zshrc`, etc...):
-
-`alias dgo='wrapper.sh'`
-
-Now you're ready to run the wrapper. It supports the following commands:
-
-* `dgo build`
-* `dgo cross`
-* `dgo static`
-* `dgo vendor`
-* `dgo image`
-* `dgo run`
-* `dgo run-static`
-
-
-## TODO:
-
-...
 
 ## Building this image
 
