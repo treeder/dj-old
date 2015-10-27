@@ -97,7 +97,7 @@ TODO:
 docker build -t devo/dj:latest .
 ```
 
-Tag it with Go version too (can check with `docker run --rm treeder/go version`):
+Tag it with the version:
 
 ```sh
 docker tag devo/dj:latest devo/dj:$(cat version.txt)
@@ -106,5 +106,5 @@ docker tag devo/dj:latest devo/dj:$(cat version.txt)
 Push:
 
 ```sh
-docker push treeder/go
+docker push devo/dj
 ```

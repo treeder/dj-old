@@ -28,23 +28,27 @@ end
 
 Devo.volumes = @volumes
 
-lang = ARGV.shift
-case lang
-when 'go'
-  helper = Devo::GoHelper.new
-  helper.run(ARGV)
-when 'ruby'
-  helper = Devo::RubyHelper.new
-  helper.run(ARGV)
-when 'node'
-  helper = Devo::NodeHelper.new
-  helper.run(ARGV)
-when 'python'
-  helper = Devo::PythonHelper.new
-  helper.run(ARGV)
-when 'php'
-  helper = Devo::PhpHelper.new
-  helper.run(ARGV)
-else
-  raise "Language not supported."
+begin
+  lang = ARGV.shift
+  case lang
+  when 'go'
+    helper = Devo::GoHelper.new
+    helper.run(ARGV)
+  when 'ruby'
+    helper = Devo::RubyHelper.new
+    helper.run(ARGV)
+  when 'node'
+    helper = Devo::NodeHelper.new
+    helper.run(ARGV)
+  when 'python'
+    helper = Devo::PythonHelper.new
+    helper.run(ARGV)
+  when 'php'
+    helper = Devo::PhpHelper.new
+    helper.run(ARGV)
+  else
+    raise "Language not supported."
+  end
+# rescue SystemExit, Interrupt => ex
+  # puts "Caught #{ex}"
 end

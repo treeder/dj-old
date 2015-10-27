@@ -12,7 +12,7 @@ module Devo
         if args[1] == "update"
           cmd = "update"
         end
-        Devo.docker_exec("iron/ruby:dev", "bundle config build.nokogiri --use-system-libraries && bundle #{cmd}")
+        Devo.docker_exec("iron/ruby:dev", "bundle config --local build.nokogiri --use-system-libraries && bundle #{cmd}")
         Devo.exec("chmod -R a+rw bundle")
         Devo.exec("chmod -R a+rw .bundle")
       when 'run'

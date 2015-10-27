@@ -9,6 +9,8 @@ module Devo
       case args[0]
       when 'get', 'vendor'
 script = script_base + '
+set -e
+
 go get
 cp -r $p/vendor $wd
 chmod -R a+rw $wd/vendor
