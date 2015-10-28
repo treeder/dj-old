@@ -57,6 +57,8 @@ docker push username/myapp
 dj go build
 # fmt
 dj go fmt
+# Build static binary
+dj go static
 ```
 
 ### Ruby:

@@ -20,6 +20,8 @@ chmod -R a+rw $wd/vendor
       when 'build'
         # todo: use extra params provided by user, eg: #{args.join(' '). But need to parse -o to find output file name to copy
         build()
+      when 'static'
+        static()
       when 'run'
         build()
         Devo.docker_exec("iron/base", "./app")
@@ -57,6 +59,15 @@ export GOPATH=$p/vendor:/go
       go build -o app
       cp app $wd
       chmod a+rwx $wd/app
+      "
+      Devo.docker_exec_script("iron/go", [], script)
+    end
+
+    def static()
+      script = script_base + "
+      CGO_ENABLED=0 go build -a --installsuffix cgo --ldflags=\"-s\" -o static
+      cp static $wd
+      chmod a+rwx $wd/static
       "
       Devo.docker_exec_script("iron/go", [], script)
     end
