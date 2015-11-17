@@ -16,7 +16,7 @@ cp -r $p/vendor $wd
 chmod -R a+rw $wd/vendor
 '
         # ["-w","/go/src/x/y/z","-e","GOPATH=/go/src/x/y/z/vendor:/go"]
-        Devo.docker_exec_script("iron/go", [], script)
+        Devo.docker_exec_script("iron/go:dev", [], script)
       when 'build'
         # todo: use extra params provided by user, eg: #{args.join(' '). But need to parse -o to find output file name to copy
         build()
@@ -60,7 +60,7 @@ export GOPATH=$p/vendor:/go
       cp app $wd
       chmod a+rwx $wd/app
       "
-      Devo.docker_exec_script("iron/go", [], script)
+      Devo.docker_exec_script("iron/go:dev", [], script)
     end
 
     def static()
@@ -69,7 +69,7 @@ export GOPATH=$p/vendor:/go
       cp static $wd
       chmod a+rwx $wd/static
       "
-      Devo.docker_exec_script("iron/go", [], script)
+      Devo.docker_exec_script("iron/go:dev", [], script)
     end
   end
 end

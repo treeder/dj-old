@@ -35,10 +35,10 @@ module Devo
       # Catch interrupts to shut down the docker process too
       Signal.trap("INT") {
         # Ctrl-C was pressed...
-        puts "Caught interrupt - killing child..."
+        puts "Caught interrupt - killing docker child..."
 
         # Kill child process...
-        p `docker stop #{cname}`
+        p `docker kill #{cname}`
         # Process.kill("INT", pid)
 
         # This prevents the process from becoming defunct
@@ -81,7 +81,7 @@ module Devo
 
   def self.create_cmd(image, args, options)
     name = "dj_#{rand(1000)}"
-    # --add-host dockerhost:172.17.42.1 
+    # --add-host dockerhost:172.17.42.1
     maincmd = "run --rm --name #{name} -i #{Devo.volumes} -p 8080:8080 -w /app".split
     options.each do |o|
       maincmd << o
