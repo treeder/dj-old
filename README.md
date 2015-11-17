@@ -19,7 +19,7 @@ First, to simplify things, add this to your bashrc:
 
 ```
 dj() {
-  docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -v $HOME:/root:ro -w /app -p 8080:8080 devo/dj $@
+  docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -v "$HOME":/root:ro -w /app devo/dj $@
 }
 ```
 
@@ -92,6 +92,9 @@ Nothing special.
 
 TODO:
 
+## Testing on various languages
+
+You can use the code in this repo to test: https://github.com/iron-io/dockerworker
 
 ## Building this image
 
