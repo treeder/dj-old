@@ -84,17 +84,13 @@ Nothing special.
 
 Nothing special.
 
+## Testing with various languages
 
+You can use the code in this repo to test for now: https://github.com/iron-io/dockerworker
 
+## To Do
 
-
-## Troubleshooting
-
-TODO:
-
-## Testing on various languages
-
-You can use the code in this repo to test: https://github.com/iron-io/dockerworker
+* [ ] Add more languages. Help wanted!
 
 ## Building this image
 
