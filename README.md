@@ -19,9 +19,11 @@ First, to simplify things, add this to your bashrc:
 
 ```
 dj() {
-  docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -v "$HOME":/root:ro -w /app devo/dj $@
+  docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -v "$HOME":/root -w /app devo/dj $@
 }
 ```
+
+NOTE: We use /root above because some things like node and git require it. Also, I tried `"$HOME":/root:ro`, but node requires write privileges on it.
 
 ### ALL languages
 
@@ -90,7 +92,8 @@ You can use the code in this repo to test for now: https://github.com/iron-io/do
 
 ## To Do
 
-* [ ] Add more languages. Help wanted!
+See: https://github.com/treeder/devo/issues
+
 
 ## Building this image
 
