@@ -2,7 +2,7 @@
 module Devo
   class GoHelper
 
-    def run(args=[])
+    def run(args=[], options)
       if args.length < 1
         raise "devo go: invalid args: #{args.inspect}"
       end
@@ -24,9 +24,11 @@ chmod -R a+rw $wd/vendor
         static()
       when 'run'
         build()
-        Devo.docker_exec("iron/base", "./app")
+        Devo.docker_exec("iron/go", "./app")
       when 'image'
-        Devo::ImageHelper.build1('iron/base', './app', args[1..args.length])
+        Devo::ImageHelper.build1('iron/go', './app', args[1..args.length])
+      when 'version'
+        Devo.docker_exec("iron/go:dev", "go version")
       else
         raise "Invalid Go command: #{args[0]}"
       end

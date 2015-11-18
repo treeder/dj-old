@@ -2,7 +2,7 @@
 module Devo
   class RubyHelper
 
-    def run(args=[])
+    def run(args=[], options)
       if args.length < 1
         raise "devo ruby: invalid args."
       end
@@ -19,6 +19,8 @@ module Devo
         Devo.docker_exec("iron/ruby", "ruby #{args[1]}")
       when 'image'
         Devo::ImageHelper.build1('iron/ruby', 'ruby', args[1..args.length])
+      when 'version'
+        Devo.docker_exec("iron/ruby", "ruby -v")
       else
         raise "Invalid ruby command: #{args[0]}"
       end

@@ -2,17 +2,21 @@
 module Devo
   class PythonHelper
 
-    def run(args)
+    def run(args, options)
       if args.length < 1
         raise "devo python: invalid args."
       end
       case args[0]
       when 'install', 'vendor'
         # npm install
-        Devo.docker_exec("iron/python:dev", "pip install -t packages -r requirements.txt")
+        Devo.docker_exec("iron/python:2-dev", "pip install -t packages -r requirements.txt")
         Devo.exec("chmod -R a+rw packages")
+      when 'run'
+        Devo.docker_exec("iron/python:2", "python #{args[1]}")
       when 'image'
-        Devo::ImageHelper.build1('iron/python', 'python', args[1..args.length])
+        Devo::ImageHelper.build1('iron/python:2', 'python', args[1..args.length])
+      when 'version'
+        Devo.docker_exec("iron/python:2", "python --version")
       else
         raise "Invalid python command: #{args[0]}"
       end

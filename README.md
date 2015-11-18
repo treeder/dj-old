@@ -48,6 +48,8 @@ dj LANG image username/myapp:latest
 docker run --rm -p 8080:8080 username/myapp [script.abc]
 # push image to docker hub
 docker push username/myapp
+# check language version
+dj LANG version
 ```
 
 `script.abc` is for interpreted languages, for example: `dj ruby run hello.rb`
