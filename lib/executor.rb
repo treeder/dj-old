@@ -38,6 +38,12 @@ module Devo
     end
     # puts "container options:"
     # p coptions
+    if !Docker::Image.exist?(image)
+      puts "Image #{image} doesn't exist, pulling..."
+      # Pull image to make sure we have it.
+      image = Docker::Image.create('fromImage' => image)
+    end
+    # Now fire it up
     container = Docker::Container.create(coptions)
     container.tap(&:start).streaming_logs(follow:true, stdout: true, stderr: true) { |stream, chunk|
       # puts "#{stream}: #{chunk}" # for debugging
