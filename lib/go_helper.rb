@@ -2,7 +2,10 @@
 module Devo
   class GoHelper
 
+    attr_accessor :options
+
     def run(args=[], options)
+      @options = options
       if args.length < 1
         raise "devo go: invalid args: #{args.inspect}"
       end
@@ -16,7 +19,7 @@ cp -r $p/vendor $wd
 chmod -R a+rw $wd/vendor
 '
         # ["-w","/go/src/x/y/z","-e","GOPATH=/go/src/x/y/z/vendor:/go"]
-        Devo.docker_exec_script("iron/go:dev", [], script)
+        Devo.docker_exec_script("iron/go:dev", script, options)
       when 'build'
         # todo: use extra params provided by user, eg: #{args.join(' '). But need to parse -o to find output file name to copy
         build()
@@ -24,11 +27,11 @@ chmod -R a+rw $wd/vendor
         static()
       when 'run'
         build()
-        Devo.docker_exec("iron/go", "./app")
+        Devo.docker_exec("iron/go", "./app", options)
       when 'image'
         Devo::ImageHelper.build1('iron/go', './app', args[1..args.length])
       when 'version'
-        Devo.docker_exec("iron/go:dev", "go version")
+        Devo.docker_exec("iron/go:dev", "go version", options)
       else
         raise "Invalid Go command: #{args[0]}"
       end
@@ -62,7 +65,7 @@ export GOPATH=$p/vendor:/go
       cp app $wd
       chmod a+rwx $wd/app
       "
-      Devo.docker_exec_script("iron/go:dev", [], script)
+      Devo.docker_exec_script("iron/go:dev", script, options)
     end
 
     def static()
@@ -71,7 +74,7 @@ export GOPATH=$p/vendor:/go
       cp static $wd
       chmod a+rwx $wd/static
       "
-      Devo.docker_exec_script("iron/go:dev", [], script)
+      Devo.docker_exec_script("iron/go:dev", script, options)
     end
   end
 end

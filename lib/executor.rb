@@ -1,7 +1,20 @@
 
 module Devo
 
-  def self.docker_exec(image, args, options={})
+  def self.docker_exec(image, args, options)
+    docker_run(image, args, options)
+  end
+
+  def self.docker_exec_script(image, script, options)
+    # TODO: change this to use docker api, like docker exec
+    # write script and mount inside container
+    File.write('__uberscript__', script)
+    args = "chmod a+x __uberscript__ && ./__uberscript__"
+    docker_run(image, args, options)
+    File.delete('__uberscript__')
+  end
+
+  def self.docker_run(image, args, options=OpenStruct.new)
     # mounts = Devo.docker_host[]
     Devo.logger.debug("docker_exec args: #{args.inspect}")
     coptions = {
@@ -20,6 +33,9 @@ module Devo
         "Binds": Devo.docker_host['HostConfig']['Binds']
       },
     }
+    if options.env_vars && options.env_vars.length > 0
+      coptions['Env'] = options.env_vars
+    end
     # puts "container options:"
     # p coptions
     container = Docker::Container.create(coptions)
@@ -30,22 +46,6 @@ module Devo
     # container.tap(&:start).streaming_logs(stdout: true, stderr: true) { |stream, chunk| puts "#{stream}: #{chunk}" }
     # container.tap(&:start).attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true) { |stream, chunk| puts "#{stream}: #{chunk}" }
     container.delete(:force => true)
-  end
-
-  def self.docker_exec_old(image, args, options={})
-    maincmd, cname = create_cmd(image, args, options)
-
-    popen(maincmd, cname)
-
-  end
-
-  def self.docker_exec_script(image, options=[], script)
-    # write script and mount inside container
-    File.write('__uberscript__', script)
-    args = "chmod a+x __uberscript__ && ./__uberscript__"
-    maincmd, cname = create_cmd(image, args, options)
-    popen(maincmd, cname)
-    File.delete('__uberscript__')
   end
 
   def self.popen(maincmd, cname)
@@ -101,22 +101,4 @@ module Devo
     }
   end
 
-  def self.create_cmd(image, args, options)
-    name = "dj_#{rand(1000)}"
-    # --add-host dockerhost:172.17.42.1
-    maincmd = "run --rm --name #{name} -i #{Devo.volumes} -p 8080:8080 -w /app".split
-    options.each do |o|
-      puts "option: #{o.inspect}"
-      maincmd << o
-    end
-    maincmd << image
-    if args.is_a?(String)
-#      args = args.split(' ')
-    elsif args.is_a?(Array)
-      args = args.join(' ')
-    end
-    maincmd << "sh" << "-c" << args
-    puts (maincmd ).join(' ')
-    return maincmd, name
-  end
 end

@@ -14,9 +14,9 @@ require_relative 'lib/php_helper'
 require_relative 'lib/go_helper'
 
 options = OpenStruct.new
+options.env_vars = []
 x = OptionParser.new do |opt|
   opt.on('-e', '--env ENVVAR', 'An environment variable to pass into container.') { |o|
-    options.env_vars = [] unless options.env_vars
     options.env_vars << o
   }
   opt.on('-l', '--last_name LASTNAME', 'The last name') { |o| options.last_name = o }
@@ -24,7 +24,7 @@ end
 x.parse!
 # p options
 options.each_pair do |k,v|
-  # puts "HI"
+  # puts "OPTIONS"
   # p k
   # p v
 end

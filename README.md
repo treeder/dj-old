@@ -54,7 +54,17 @@ dj LANG version
 
 `script.abc` is for interpreted languages, for example: `dj ruby run hello.rb`
 
-### Go specific commands
+### Environment Variables
+
+Similar to Docker, use `-e` after `dj`, example:
+
+```sh
+dj -e "MYENVVAR=YO" ruby run
+```
+
+### Language Specific Commands
+
+#### Go specific commands
 
 ```sh
 # build, run already does this, but if you just want to build without running:
@@ -65,7 +75,7 @@ dj go fmt
 dj go static
 ```
 
-### Ruby:
+#### Ruby:
 
 NOTE: You must add `require_relative 'bundle/bundler/setup'` to the start of Ruby program/script.
 
@@ -76,21 +86,21 @@ dj ruby run hello.rb
 dj ruby image username/rubyapp:latest hello.rb
 ```
 
-### Node:
+#### Node:
 
 Nothing special.
 
-### Python:
+#### Python:
 
 Nothing special.
 
-### PHP:
+#### PHP:
 
 Nothing special.
 
-## Testing with various languages
+## Examples with various languages
 
-You can use the code in this repo to test for now: https://github.com/iron-io/dockerworker
+You can use the code in this repo for examples: https://github.com/iron-io/dockerworker
 
 ## To Do
 
@@ -98,7 +108,7 @@ See: https://github.com/treeder/devo/issues
 
 ## Troubleshooting
 
-First, enable debugging by adding `-e "LOG_LEVEL=DEBUG"` to your dj docker run command. 
+First, enable debugging by adding `-e "LOG_LEVEL=DEBUG"` to your dj docker run command.
 
 
 ## Building this image

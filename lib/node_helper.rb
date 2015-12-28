@@ -7,6 +7,8 @@ module Devo
         raise "devo node: invalid args."
       end
       case args[0]
+      when 'run'
+        Devo.docker_exec("iron/node", "node #{args[1]}", options)
       when 'install', 'vendor'
         # npm install
         Devo.docker_exec("iron/node:dev", "npm install")
