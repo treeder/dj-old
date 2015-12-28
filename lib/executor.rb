@@ -1,16 +1,38 @@
 
 module Devo
-  @@volumes = nil
 
-  def self.volumes=(x)
-    @@foo = x
+  def self.docker_exec(image, args, options={})
+    # mounts = Devo.docker_host[]
+    Devo.logger.debug("docker_exec args: #{args.inspect}")
+    coptions = {
+      'Image' => image,
+      'Cmd' => ['sh', '-c', "#{args}"],
+      "AttachStdout": true,
+      "AttachStderr": true,
+      # 'Mounts' => mounts,
+      # "Env": [
+              #  "FOO=bar",
+              #  "BAZ=quux"
+      #  ],
+      'WorkingDir' => '/app',
+      "HostConfig" => {
+        'VolumesFrom' => [Devo.docker_host['Name']],
+        "Binds": Devo.docker_host['HostConfig']['Binds']
+      },
+    }
+    # puts "container options:"
+    # p coptions
+    container = Docker::Container.create(coptions)
+    container.tap(&:start).streaming_logs(follow:true, stdout: true, stderr: true) { |stream, chunk|
+      # puts "#{stream}: #{chunk}" # for debugging
+      puts chunk
+    }
+    # container.tap(&:start).streaming_logs(stdout: true, stderr: true) { |stream, chunk| puts "#{stream}: #{chunk}" }
+    # container.tap(&:start).attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true) { |stream, chunk| puts "#{stream}: #{chunk}" }
+    container.delete(:force => true)
   end
 
-  def self.volumes
-    @@foo
-  end
-
-  def self.docker_exec(image, args, options=[])
+  def self.docker_exec_old(image, args, options={})
     maincmd, cname = create_cmd(image, args, options)
 
     popen(maincmd, cname)
@@ -84,6 +106,7 @@ module Devo
     # --add-host dockerhost:172.17.42.1
     maincmd = "run --rm --name #{name} -i #{Devo.volumes} -p 8080:8080 -w /app".split
     options.each do |o|
+      puts "option: #{o.inspect}"
       maincmd << o
     end
     maincmd << image

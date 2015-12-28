@@ -12,11 +12,11 @@ module Devo
         Devo.docker_exec("iron/python:2-dev", "pip install -t packages -r requirements.txt")
         Devo.exec("chmod -R a+rw packages")
       when 'run'
-        Devo.docker_exec("iron/python:2", "python #{args[1]}")
+        Devo.docker_exec("iron/python:2", "python #{args[1]}", options)
       when 'image'
         Devo::ImageHelper.build1('iron/python:2', 'python', args[1..args.length])
       when 'version'
-        Devo.docker_exec("iron/python:2", "python --version")
+        Devo.docker_exec("iron/python:2", "python --version".split(' '))
       else
         raise "Invalid python command: #{args[0]}"
       end

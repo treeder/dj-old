@@ -23,7 +23,7 @@ dj() {
 }
 ```
 
-NOTE: We use /root above because some things like node and git require it. Also, I tried `"$HOME":/root:ro`, but node requires write privileges on it.
+NOTE/WARNING: We use /root above because some things like node and git require it. Also, I tried `"$HOME":/root:ro`, but node requires write privileges on it.
 
 ### ALL languages
 
@@ -96,8 +96,20 @@ You can use the code in this repo to test for now: https://github.com/iron-io/do
 
 See: https://github.com/treeder/devo/issues
 
+## Troubleshooting
+
+First, enable debugging by adding `-e "LOG_LEVEL=DEBUG"` to your dj docker run command. 
+
 
 ## Building this image
+
+Vendor gems:
+
+```sh
+docker run --rm -v "$PWD":/worker -w /worker iron/ruby:dev bundle install --standalone --clean
+```
+
+Build image:
 
 ```sh
 docker build -t devo/dj:latest .

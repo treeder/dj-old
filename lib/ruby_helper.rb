@@ -20,7 +20,7 @@ module Devo
       when 'image'
         Devo::ImageHelper.build1('iron/ruby', 'ruby', args[1..args.length])
       when 'version'
-        Devo.docker_exec("iron/ruby", "ruby -v")
+        Devo.docker_exec("iron/ruby", "ruby -v".split(' '))
       else
         raise "Invalid ruby command: #{args[0]}"
       end
