@@ -54,12 +54,22 @@ dj LANG version
 
 `script.abc` is for interpreted languages, for example: `dj ruby run hello.rb`
 
+### Port mapping
+
+So you can map ports from the Docker containers to your app.
+
+Similar to Docker, use `-p` after `dj`, example:
+
+```sh
+dj -p "8080:8080" ruby run hello.rb
+```
+
 ### Environment Variables
 
 Similar to Docker, use `-e` after `dj`, example:
 
 ```sh
-dj -e "MYENVVAR=YO" ruby run
+dj -e "MYENVVAR=YO" ruby run hello.rb
 ```
 
 ### Language Specific Commands
@@ -88,7 +98,10 @@ dj ruby image username/rubyapp:latest hello.rb
 
 #### Node:
 
-Nothing special.
+```sh
+# run npm commands like npm start
+dj node npm start
+```
 
 #### Python:
 
@@ -109,7 +122,6 @@ See: https://github.com/treeder/devo/issues
 ## Troubleshooting
 
 First, enable debugging by adding `-e "LOG_LEVEL=DEBUG"` to your dj docker run command.
-
 
 ## Building this image
 

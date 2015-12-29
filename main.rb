@@ -15,11 +15,29 @@ require_relative 'lib/go_helper'
 
 options = OpenStruct.new
 options.env_vars = []
+options.ports = []
 x = OptionParser.new do |opt|
+  opt.banner = "Usage: dj LANG COMMAND [options]"
   opt.on('-e', '--env ENVVAR', 'An environment variable to pass into container.') { |o|
     options.env_vars << o
   }
+  opt.on('-p', '--port PORT', 'Port mapping. Same usage as docker run -p.') { |o|
+    options.ports << o
+  }
   opt.on('-l', '--last_name LASTNAME', 'The last name') { |o| options.last_name = o }
+
+  # No argument, shows at tail.  This will print an options summary.
+  # Try it and see!
+  opt.on_tail("-h", "--help", "Show this message") do
+    puts opt
+    exit
+  end
+
+  # Another typical switch to print the version.
+  opt.on_tail("--version", "Show version") do
+    puts IO.read('version.txt')
+    exit
+  end
 end
 x.parse!
 # p options
@@ -105,7 +123,7 @@ begin
     helper = Devo::PhpHelper.new
     helper.run(ARGV, options)
   else
-    raise "Language not supported."
+    puts "ERROR: Language not supported: #{lang}"
   end
 # rescue SystemExit, Interrupt => ex
   # puts "Caught #{ex}"

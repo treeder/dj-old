@@ -29,12 +29,22 @@ module Devo
       #  ],
       'WorkingDir' => '/app',
       "HostConfig" => {
-        'VolumesFrom' => [Devo.docker_host['Name']],
-        "Binds": Devo.docker_host['HostConfig']['Binds']
+        'VolumesFrom': [Devo.docker_host['Name']],
+        'Binds': Devo.docker_host['HostConfig']['Binds']
       },
     }
     if options.env_vars && options.env_vars.length > 0
       coptions['Env'] = options.env_vars
+    end
+    if options.ports && options.ports.length > 0
+      # info: http://stackoverflow.com/a/20429133/105562
+      coptions['ExposedPorts'] = {}
+      coptions['HostConfig']['PortBindings'] = {}
+      options.ports.each do |p|
+        psplit = p.split(':')
+        coptions['ExposedPorts']["#{psplit[1]}/tcp"] = {}
+        coptions['HostConfig']['PortBindings']["#{psplit[1]}/tcp"] = [{ "HostPort": "#{psplit[0]}" }]
+      end
     end
     # puts "container options:"
     # p coptions
