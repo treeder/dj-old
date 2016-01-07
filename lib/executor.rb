@@ -17,9 +17,10 @@ module Devo
   def self.docker_run(image, args, options=OpenStruct.new)
     # mounts = Devo.docker_host[]
     Devo.logger.debug("docker_exec args: #{args.inspect}")
+    cmd = args.is_a?(String) ? ['sh', '-c', "#{args}"] : args
     coptions = {
       'Image' => image,
-      'Cmd' => ['sh', '-c', "#{args}"],
+      'Cmd' => cmd,
       "AttachStdout": true,
       "AttachStderr": true,
       # 'Mounts' => mounts,

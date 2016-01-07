@@ -131,6 +131,12 @@ Vendor gems:
 docker run --rm -v "$PWD":/worker -w /worker iron/ruby:dev bundle install --standalone --clean
 ```
 
+Testing:
+
+```sh
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -v "$HOME":/root -w /app -e "LOG_LEVEL=DEBUG" treeder/ruby-dind ruby main.rb COMMAND
+```
+
 Build image:
 
 ```sh
