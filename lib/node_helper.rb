@@ -11,7 +11,7 @@ module Devo
         Devo.docker_exec("iron/node", "node #{args[1]}", options)
       when 'install', 'vendor'
         # npm install
-        Devo.docker_exec("iron/node:dev", "npm install")
+        Devo.docker_exec("iron/node:dev", "npm install", options)
         Devo.exec("chmod -R a+rw node_modules")
       when 'image'
         Devo::ImageHelper.build1('iron/node', 'node', args[1..args.length])
