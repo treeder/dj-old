@@ -1,5 +1,7 @@
 # Docker Jockey
 
+![Jockey](http://i.giphy.com/5iDijZZe6RzYQ.gif)
+
 **All you need is Docker!**
 
 This is a Docker image that will enable you to develop in all your favorite languages and all you need to install is Docker.
