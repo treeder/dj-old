@@ -13,6 +13,8 @@ module Devo
         # npm install
         Devo.docker_exec("iron/node:dev", "npm install", options)
         Devo.exec("chmod -R a+rw node_modules")
+      when 'npm'
+        Devo.docker_exec("iron/node:dev", "npm #{args[1]}", options)
       when 'image'
         Devo::ImageHelper.build1('iron/node', 'node', args[1..args.length])
       when 'version'
@@ -20,8 +22,6 @@ module Devo
       else
         raise "Invalid node command: #{args[0]}"
       end
-
     end
-
   end
 end

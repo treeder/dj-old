@@ -17,9 +17,14 @@ module Devo
   def self.docker_run(image, args, options=OpenStruct.new)
     # mounts = Devo.docker_host[]
     Devo.logger.debug("docker_exec args: #{args.inspect}")
+    cmd = args.is_a?(String) ? ['sh', '-c', "#{args}"] : args
     coptions = {
       'Image' => image,
-      'Cmd' => ['sh', '-c', "#{args}"],
+      'Cmd' => cmd,
+            # "AttachStdin": true,
+            # "Tty": true,
+      #  "OpenStdin": true,
+      #  "StdinOnce": true,
       "AttachStdout": true,
       "AttachStderr": true,
       # 'Mounts' => mounts,
@@ -29,12 +34,22 @@ module Devo
       #  ],
       'WorkingDir' => '/app',
       "HostConfig" => {
-        'VolumesFrom' => [Devo.docker_host['Name']],
-        "Binds": Devo.docker_host['HostConfig']['Binds']
+        'VolumesFrom': [Devo.docker_host['Name']],
+        'Binds': Devo.docker_host['HostConfig']['Binds']
       },
     }
     if options.env_vars && options.env_vars.length > 0
       coptions['Env'] = options.env_vars
+    end
+    if options.ports && options.ports.length > 0
+      # info: http://stackoverflow.com/a/20429133/105562
+      coptions['ExposedPorts'] = {}
+      coptions['HostConfig']['PortBindings'] = {}
+      options.ports.each do |p|
+        psplit = p.split(':')
+        coptions['ExposedPorts']["#{psplit[1]}/tcp"] = {}
+        coptions['HostConfig']['PortBindings']["#{psplit[1]}/tcp"] = [{ "HostPort": "#{psplit[0]}" }]
+      end
     end
     # puts "container options:"
     # p coptions
@@ -49,8 +64,6 @@ module Devo
       # puts "#{stream}: #{chunk}" # for debugging
       puts chunk
     }
-    # container.tap(&:start).streaming_logs(stdout: true, stderr: true) { |stream, chunk| puts "#{stream}: #{chunk}" }
-    # container.tap(&:start).attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true) { |stream, chunk| puts "#{stream}: #{chunk}" }
     container.delete(:force => true)
   end
 
