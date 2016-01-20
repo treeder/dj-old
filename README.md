@@ -115,6 +115,23 @@ Nothing special.
 
 You can use the code in this repo for examples: https://github.com/iron-io/dockerworker
 
+## Git
+
+Just like git!
+
+```sh
+dj git COMMAND
+```
+
+Authentication? see: http://stackoverflow.com/questions/11403407/git-asks-for-username-everytime-i-push
+
+Can keep your username and password: 
+
+```sh
+dj git config --global credential.helper store
+```
+
+
 ## To Do
 
 See: https://github.com/treeder/devo/issues

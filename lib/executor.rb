@@ -21,6 +21,10 @@ module Devo
     coptions = {
       'Image' => image,
       'Cmd' => cmd,
+            # "AttachStdin": true,
+            # "Tty": true,
+      #  "OpenStdin": true,
+      #  "StdinOnce": true,
       "AttachStdout": true,
       "AttachStderr": true,
       # 'Mounts' => mounts,
@@ -60,8 +64,6 @@ module Devo
       # puts "#{stream}: #{chunk}" # for debugging
       puts chunk
     }
-    # container.tap(&:start).streaming_logs(stdout: true, stderr: true) { |stream, chunk| puts "#{stream}: #{chunk}" }
-    # container.tap(&:start).attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true) { |stream, chunk| puts "#{stream}: #{chunk}" }
     container.delete(:force => true)
   end
 
