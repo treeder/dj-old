@@ -35,7 +35,8 @@ module Devo
       'WorkingDir' => '/app',
       "HostConfig" => {
         'VolumesFrom': [Devo.docker_host['Name']],
-        'Binds': Devo.docker_host['HostConfig']['Binds']
+        'Binds': Devo.docker_host['HostConfig']['Binds'],
+        # 'PortBindings': Devo.docker_host['HostConfig']['PortBindings'],
       },
     }
     if options.env_vars && options.env_vars.length > 0
@@ -63,7 +64,21 @@ module Devo
     container.tap(&:start).streaming_logs(follow:true, stdout: true, stderr: true) { |stream, chunk|
       # puts "#{stream}: #{chunk}" # for debugging
       puts chunk
+      Signal.trap("INT") {
+        # Ctrl-C was pressed...
+        puts "Caught interrupt - killing docker child..."
+
+        # Kill child process...
+        # p `docker kill #{cname}`
+        # Process.kill("INT", pid)
+        container.delete(:force=>true)
+        exit 0
+
+        # This prevents the process from becoming defunct
+        # oe.close
+      }
     }
+    # puts "Deleting container"
     container.delete(:force => true)
   end
 
@@ -104,7 +119,7 @@ module Devo
 
   def self.exec(cmd, args = [])
     split = cmd.split(' ')
-    puts "Exec: #{(split + args).join(' ')}"
+    Devo.logger.debug "Exec: #{(split + args).join(' ')}"
     base = split.shift
     Open3.popen2e(base, *(split + args)) {|i,oe,t|
       pid = t.pid # pid of the started process.
