@@ -1,6 +1,6 @@
 # Docker Jockey
 
-![Jockey](https://files.slack.com/files-pri/T024G6JJH-F0JTGLR8A/giphy.gif)
+![Jockey](http://i.giphy.com/5iDijZZe6RzYQ.gif)
 
 **All you need is Docker!**
 
