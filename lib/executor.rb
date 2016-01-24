@@ -59,24 +59,26 @@ module Devo
       # Pull image to make sure we have it.
       image = Docker::Image.create('fromImage' => image)
     end
+
     # Now fire it up
     container = Docker::Container.create(coptions)
+    # Capture ctrl-c
+    Signal.trap("INT") {
+      # Ctrl-C was pressed...
+      puts "Caught interrupt - killing docker child..."
+
+      # Kill child process...
+      # p `docker kill #{cname}`
+      # Process.kill("INT", pid)
+      container.delete(:force=>true)
+      exit 0
+
+      # This prevents the process from becoming defunct
+      # oe.close
+    }
     container.tap(&:start).streaming_logs(follow:true, stdout: true, stderr: true) { |stream, chunk|
       # puts "#{stream}: #{chunk}" # for debugging
       puts chunk
-      Signal.trap("INT") {
-        # Ctrl-C was pressed...
-        puts "Caught interrupt - killing docker child..."
-
-        # Kill child process...
-        # p `docker kill #{cname}`
-        # Process.kill("INT", pid)
-        container.delete(:force=>true)
-        exit 0
-
-        # This prevents the process from becoming defunct
-        # oe.close
-      }
     }
     # puts "Deleting container"
     container.delete(:force => true)

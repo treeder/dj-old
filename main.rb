@@ -77,7 +77,7 @@ Devo.logger.level = ENV['LOG_LEVEL'] ?  Logger.const_get(ENV['LOG_LEVEL'].upcase
 begin
   # puts "inspect: #{`docker inspect $HOSTNAME`}"
   di = JSON.parse("#{`docker inspect $HOSTNAME`}")
-  p di
+  # p di
   @volumes = "--volumes-from #{di[0]['Name']}"
   Devo.docker_host = di[0]
 rescue => ex
