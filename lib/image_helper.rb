@@ -1,6 +1,6 @@
 require 'fileutils'
 
-module Devo
+module DockerJockey
   class ImageHelper
     def self.build1(from, entry, args)
       if args.length < 1
@@ -9,7 +9,7 @@ module Devo
       image_name = args[0]
       filename = args[1]
       FileUtils.mkdir_p '/tmp/app'
-      Devo.exec("cp -r . /tmp/app")
+      DockerJockey.exec("cp -r . /tmp/app")
       entrypoint = [entry]
       entrypoint << filename if filename
       # exec("cp /scripts/lib/Dockerfile /tmp/app")
@@ -20,11 +20,11 @@ module Devo
         ENTRYPOINT [ #{entrypoint.map{ |e| '"' + e + '"'}.join(', ') }  ]
         ")
       }
-      # Devo.exec("cat /tmp/app/Dockerfile")
-      # Devo.exec("ls -al /tmp/app")
+      # DockerJockey.exec("cat /tmp/app/Dockerfile")
+      # DockerJockey.exec("ls -al /tmp/app")
       FileUtils.cd('/tmp/app') do
-        Devo.exec("/usr/bin/docker version")
-        Devo.exec("/usr/bin/docker build -t #{image_name} .")
+        DockerJockey.exec("/usr/bin/docker version")
+        DockerJockey.exec("/usr/bin/docker build -t #{image_name} .")
       end
     end
   end

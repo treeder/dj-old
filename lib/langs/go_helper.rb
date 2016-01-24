@@ -1,5 +1,5 @@
 
-module Devo
+module DockerJockey
   class GoHelper
 
     attr_accessor :options
@@ -19,21 +19,21 @@ cp -r $p/vendor $wd
 chmod -R a+rw $wd/vendor
 ' + script_cleanup()
         # ["-w","/go/src/x/y/z","-e","GOPATH=/go/src/x/y/z/vendor:/go"]
-        Devo.docker_exec_script("iron/go:dev", script, options)
+        DockerJockey.docker_exec_script("iron/go:dev", script, options)
       when 'build'
         # todo: use extra params provided by user, eg: #{args.join(' '). But need to parse -o to find output file name to copy
         build()
       when 'fmt'
-        Devo.docker_exec("iron/go:dev", "go fmt", options)
+        DockerJockey.docker_exec("iron/go:dev", "go fmt", options)
       when 'static'
         static()
       when 'run'
         build()
-        Devo.docker_exec("iron/go", "./app", options)
+        DockerJockey.docker_exec("iron/go", "./app", options)
       when 'image'
-        Devo::ImageHelper.build1('iron/go', './app', args[1..args.length])
+        DockerJockey::ImageHelper.build1('iron/go', './app', args[1..args.length])
       when 'version'
-        Devo.docker_exec("iron/go:dev", "go version", options)
+        DockerJockey.docker_exec("iron/go:dev", "go version", options)
       else
         raise "Invalid Go command: #{args[0]}"
       end
@@ -74,7 +74,7 @@ rm -rf /go
       cp app $wd
       chmod a+rwx $wd/app
       " + script_cleanup()
-      Devo.docker_exec_script("iron/go:dev", script, options)
+      DockerJockey.docker_exec_script("iron/go:dev", script, options)
     end
 
     def static()
@@ -83,7 +83,7 @@ rm -rf /go
       cp static $wd
       chmod a+rwx $wd/static
       " + script_cleanup()
-      Devo.docker_exec_script("iron/go:dev", script, options)
+      DockerJockey.docker_exec_script("iron/go:dev", script, options)
     end
   end
 end

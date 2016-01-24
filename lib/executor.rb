@@ -1,5 +1,5 @@
 
-module Devo
+module DockerJockey
 
   def self.docker_exec(image, args, options)
     docker_run(image, args, options)
@@ -15,8 +15,8 @@ module Devo
   end
 
   def self.docker_run(image, args, options=OpenStruct.new)
-    # mounts = Devo.docker_host[]
-    Devo.logger.debug("docker_exec args: #{args.inspect}")
+    # mounts = DockerJockey.docker_host[]
+    DockerJockey.logger.debug("docker_exec args: #{args.inspect}")
     cmd = args.is_a?(String) ? ['sh', '-c', "#{args}"] : args
     coptions = {
       'Image' => image,
@@ -34,9 +34,9 @@ module Devo
       #  ],
       'WorkingDir' => '/app',
       "HostConfig" => {
-        'VolumesFrom': [Devo.docker_host['Name']],
-        'Binds': Devo.docker_host['HostConfig']['Binds'],
-        # 'PortBindings': Devo.docker_host['HostConfig']['PortBindings'],
+        'VolumesFrom': [DockerJockey.docker_host['Name']],
+        'Binds': DockerJockey.docker_host['HostConfig']['Binds'],
+        # 'PortBindings': DockerJockey.docker_host['HostConfig']['PortBindings'],
       },
     }
     if options.env_vars && options.env_vars.length > 0
@@ -121,7 +121,7 @@ module Devo
 
   def self.exec(cmd, args = [])
     split = cmd.split(' ')
-    Devo.logger.debug "Exec: #{(split + args).join(' ')}"
+    DockerJockey.logger.debug "Exec: #{(split + args).join(' ')}"
     base = split.shift
     Open3.popen2e(base, *(split + args)) {|i,oe,t|
       pid = t.pid # pid of the started process.

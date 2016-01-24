@@ -24,7 +24,7 @@ coptions = {
       # "/app": {}
     # },
   "HostConfig" => {
-    # 'VolumesFrom' => [Devo.docker_host['Name']]
+    # 'VolumesFrom' => [DockerJockey.docker_host['Name']]
     "Binds": ["#{Dir.pwd}:/app"]
   },
 }

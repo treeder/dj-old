@@ -5,14 +5,7 @@ require 'optparse'
 require 'ostruct'
 require 'docker'
 require 'logger'
-require_relative 'lib/executor'
-require_relative 'lib/git_helper'
-require_relative 'lib/image_helper'
-require_relative 'lib/ruby_helper'
-require_relative 'lib/node_helper'
-require_relative 'lib/python_helper'
-require_relative 'lib/php_helper'
-require_relative 'lib/go_helper'
+require_relative 'lib/docker_jockey'
 
 options = OpenStruct.new
 options.env_vars = []
@@ -42,7 +35,7 @@ x = OptionParser.new do |opt|
 end
 x.order!
 
-module Devo
+module DockerJockey
   @@docker_host = nil
   @@volumes = nil
   @@logger = nil
@@ -70,8 +63,8 @@ module Devo
   end
 
 end
-Devo.logger = Logger.new(STDOUT)
-Devo.logger.level = ENV['LOG_LEVEL'] ?  Logger.const_get(ENV['LOG_LEVEL'].upcase) : Logger::INFO
+DockerJockey.logger = Logger.new(STDOUT)
+DockerJockey.logger.level = ENV['LOG_LEVEL'] ?  Logger.const_get(ENV['LOG_LEVEL'].upcase) : Logger::INFO
 
 @volumes = "-v \"#{Dir.pwd}\":/app"
 begin
@@ -79,42 +72,43 @@ begin
   di = JSON.parse("#{`docker inspect $HOSTNAME`}")
   # p di
   @volumes = "--volumes-from #{di[0]['Name']}"
-  Devo.docker_host = di[0]
+  DockerJockey.docker_host = di[0]
 rescue => ex
   p ex
   puts "couldn't inspect"
 end
 
 if ARGV.length < 1
-  Devo.logger.fatal "No command provided."
+  DockerJockey.logger.fatal "No command provided."
   exit
 end
 
-# Devo.logger.debug "Options: #{options.inspect}"
+# DockerJockey.logger.debug "Options: #{options.inspect}"
 
-Devo.volumes = @volumes
+DockerJockey.volumes = @volumes
 
-Devo.logger.debug ARGV
+DockerJockey.logger.debug ARGV
+
 begin
   lang = ARGV.shift
   case lang
   when 'git'
-    helper = Devo::GitHelper.new
+    helper = DockerJockey::GitHelper.new
     helper.run(ARGV, options)
   when 'go'
-    helper = Devo::GoHelper.new
+    helper = DockerJockey::GoHelper.new
     helper.run(ARGV, options)
   when 'ruby'
-    helper = Devo::RubyHelper.new
+    helper = DockerJockey::RubyHelper.new
     helper.run(ARGV, options)
   when 'node'
-    helper = Devo::NodeHelper.new
+    helper = DockerJockey::NodeHelper.new
     helper.run(ARGV, options)
   when 'python'
-    helper = Devo::PythonHelper.new
+    helper = DockerJockey::PythonHelper.new
     helper.run(ARGV, options)
   when 'php'
-    helper = Devo::PhpHelper.new
+    helper = DockerJockey::PhpHelper.new
     helper.run(ARGV, options)
   else
     puts "ERROR: Language not supported: #{lang}"
