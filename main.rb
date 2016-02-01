@@ -5,6 +5,7 @@ require 'optparse'
 require 'ostruct'
 require 'docker'
 require 'logger'
+
 require_relative 'lib/docker_jockey'
 
 options = OpenStruct.new
@@ -18,7 +19,6 @@ x = OptionParser.new do |opt|
   opt.on('-p', '--port PORT', 'Port mapping. Same usage as docker run -p.') { |o|
     options.ports << o
   }
-  opt.on('-l', '--last_name LASTNAME', 'The last name') { |o| options.last_name = o }
 
   # No argument, shows at tail.  This will print an options summary.
   # Try it and see!
@@ -89,6 +89,11 @@ DockerJockey.volumes = @volumes
 
 DockerJockey.logger.debug ARGV
 
+main = DockerJockey::Main.new
+
+main.load_configs()
+
+# TODO: move this all into Main
 begin
   lang = ARGV.shift
   case lang
@@ -110,6 +115,8 @@ begin
   when 'php'
     helper = DockerJockey::PhpHelper.new
     helper.run(ARGV, options)
+  when 'deploy'
+    main.deploy(ARGV, options)
   else
     puts "ERROR: Language not supported: #{lang}"
   end

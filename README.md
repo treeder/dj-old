@@ -5,7 +5,7 @@
 **All you need is Docker!**
 
 This is a Docker image that will enable you to develop in all your favorite languages and all you need to install is Docker.
-You don't need to install any language runtimes or environment, just run the commands below and it will **just work**. 
+You don't need to install any language runtimes or environment, just run the commands below and it will **just work**.
 
 This image was inspired by [this post about developing with Docker](https://medium.com/iron-io-blog/why-and-how-to-use-docker-for-development-a156c1de3b24).
 
@@ -16,7 +16,7 @@ The following core  can perform the following functions:
 * run - runs your program
 * image - this will build and create a Docker image out of your program
 
-See below for more details on these commands. 
+See below for more details on these commands.
 
 ## Usage
 
@@ -55,6 +55,8 @@ dj LANG image username/myapp:latest
 docker run --rm -p 8080:8080 username/myapp [script.abc]
 # push image to docker hub
 docker push username/myapp
+# deploy your image (support for DigitalOcean right now)
+dj deploy username/myapp
 # check language version
 dj LANG version
 ```
@@ -136,12 +138,28 @@ dj git COMMAND
 
 Authentication? see: http://stackoverflow.com/questions/11403407/git-asks-for-username-everytime-i-push
 
-Can keep your username and password: 
+Can keep your username and password:
 
 ```sh
 dj git config --global credential.helper store
 ```
 
+## Deploying Your App
+
+First, add a `dj.secrets.json` file to your app directory and be sure you add it to `.gitignore`.
+Add a `digital_ocean` section to it:
+
+```json
+{
+  "digital_ocean": {
+    "access_token": "YOUR_TOKEN"
+  }
+}
+```
+
+```sh
+dj deploy IMAGE
+```
 
 ## To Do
 
