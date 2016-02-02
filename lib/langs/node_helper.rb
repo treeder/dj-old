@@ -18,7 +18,7 @@ module DockerJockey
       when 'image'
         DockerJockey::ImageHelper.build1('iron/node', 'node', args[1..args.length])
       when 'version'
-        DockerJockey.docker_exec("iron/node", "node -v")
+        DockerJockey.docker_exec("iron/node", "node -v", options)
       else
         raise "Invalid node command: #{args[0]}"
       end

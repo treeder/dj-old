@@ -5,7 +5,7 @@
 **All you need is Docker!**
 
 This is a Docker image that will enable you to develop in all your favorite languages and all you need to install is Docker.
-You don't need to install any language runtimes or environment, just run the commands below and it will **just work**. 
+You don't need to install any language runtimes or environment, just run the commands below and it will **just work**.
 
 This image was inspired by [this post about developing with Docker](https://medium.com/iron-io-blog/why-and-how-to-use-docker-for-development-a156c1de3b24).
 
@@ -16,7 +16,7 @@ The following core  can perform the following functions:
 * run - runs your program
 * image - this will build and create a Docker image out of your program
 
-See below for more details on these commands. 
+See below for more details on these commands.
 
 ## Usage
 
@@ -26,7 +26,7 @@ First, to simplify things, add this to your bashrc:
 
 ```
 dj() {
-  docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -v "$HOME":/root -w /app devo/dj $@
+  docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -v "$HOME":/root -w /app treeder/dj $@
 }
 ```
 
@@ -136,7 +136,7 @@ dj git COMMAND
 
 Authentication? see: http://stackoverflow.com/questions/11403407/git-asks-for-username-everytime-i-push
 
-Can keep your username and password: 
+Can keep your username and password:
 
 ```sh
 dj git config --global credential.helper store
@@ -168,17 +168,17 @@ docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app 
 Build image:
 
 ```sh
-docker build -t devo/dj:latest .
+docker build -t treeder/dj:latest .
 ```
 
 Tag it with the version:
 
 ```sh
-docker tag devo/dj:latest devo/dj:$(cat version.txt)
+docker tag treeder/dj:latest treeder/dj:$(cat version.txt)
 ```
 
 Push:
 
 ```sh
-docker push devo/dj
+docker push treeder/dj
 ```
