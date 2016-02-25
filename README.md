@@ -9,7 +9,7 @@ You don't need to install any language runtimes or environment, just run the com
 
 This image was inspired by [this post about developing with Docker](https://medium.com/iron-io-blog/why-and-how-to-use-docker-for-development-a156c1de3b24).
 
-The following core  can perfpullrm the following functions:
+The following commands are the main commands, and they are the same for all languages:
 
 * vendor - vendors your dependencies into a /vendor directory.
 * build - builds your program using the vendored dependencies
@@ -18,19 +18,17 @@ The following core  can perfpullrm the following functions:
 
 See below for more details on these commands.
 
+## Install
+
+It's packaged as a gem, so just run:
+
+```sh
+gem install dj2
+```
+
 ## Usage
 
 The usage is the same for all languages, that's the beauty of this!
-
-First, to simplify things, add this to your bashrc:
-
-```
-dj() {
-  docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -v "$HOME":/root -w /app treeder/dj $@
-}
-```
-
-NOTE/WARNING: We use /root above because some things like node and git require it. Also, I tried `"$HOME":/root:ro`, but node requires write privileges on it.
 
 ### ALL languages
 
