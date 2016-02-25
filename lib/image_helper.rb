@@ -8,12 +8,14 @@ module DockerJockey
       end
       image_name = args[0]
       filename = args[1]
-      FileUtils.mkdir_p '/tmp/app'
-      DockerJockey.exec("cp -r . /tmp/app")
+      # tmpdir = 'tmp/app'
+      # FileUtils.mkdir_p tmpdir
+      # DockerJockey.exec("cp -r . #{tmpdir}")
       entrypoint = [entry]
       entrypoint << filename if filename
       # exec("cp /scripts/lib/Dockerfile /tmp/app")
-      File.open('/tmp/app/Dockerfile', 'w') { |file|
+      dockerfile = "__Dockerfile__"
+      File.open(dockerfile, 'w') { |file|
         file.write("FROM #{from}
         WORKDIR /app
         COPY . /app/
@@ -22,10 +24,12 @@ module DockerJockey
       }
       # DockerJockey.exec("cat /tmp/app/Dockerfile")
       # DockerJockey.exec("ls -al /tmp/app")
-      FileUtils.cd('/tmp/app') do
-        DockerJockey.exec("/usr/bin/docker version")
-        DockerJockey.exec("/usr/bin/docker build -t #{image_name} .")
-      end
+      # FileUtils.cd(tmpdir) do
+        DockerJockey.exec("docker version")
+        DockerJockey.exec("docker build -t #{image_name} -f #{dockerfile} .")
+      # end
+      File.delete(dockerfile)
+
     end
   end
 end
