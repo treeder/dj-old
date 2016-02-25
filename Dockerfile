@@ -13,4 +13,4 @@ WORKDIR /app
 
 ADD . /scripts/
 
-ENTRYPOINT ["ruby", "/scripts/main.rb"]
+ENTRYPOINT ["ruby", "/scripts/lib/main.rb"]

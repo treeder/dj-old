@@ -9,7 +9,7 @@ You don't need to install any language runtimes or environment, just run the com
 
 This image was inspired by [this post about developing with Docker](https://medium.com/iron-io-blog/why-and-how-to-use-docker-for-development-a156c1de3b24).
 
-The following core  can perform the following functions:
+The following core  can perfpullrm the following functions:
 
 * vendor - vendors your dependencies into a /vendor directory.
 * build - builds your program using the vendored dependencies
@@ -151,7 +151,14 @@ See: https://github.com/treeder/devo/issues
 
 First, enable debugging by adding `-e "LOG_LEVEL=DEBUG"` to your dj docker run command.
 
-## Building this image
+## Building Gem
+
+```sh
+bundle install
+```
+
+
+## Building as a Docker image
 
 Vendor gems:
 
@@ -162,7 +169,7 @@ docker run --rm -v "$PWD":/worker -w /worker iron/ruby:dev bundle install --stan
 Testing:
 
 ```sh
-docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -v "$HOME":/root -w /app -e "LOG_LEVEL=DEBUG" treeder/ruby-dind ruby main.rb COMMAND
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD":/app -v "$HOME":/root -w /app -e "LOG_LEVEL=DEBUG" treeder/ruby-dind ruby bin/dj COMMAND
 ```
 
 Build image:

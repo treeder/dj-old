@@ -5,9 +5,6 @@ module DockerJockey
     attr_accessor :options
 
     def run(args=[], options)
-      puts "rubyhelper"
-      p args
-      p options
       @options = options
       if args.length < 1
         raise "devo ruby: invalid args."

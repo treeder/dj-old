@@ -16,6 +16,9 @@ module DockerJockey
 
   def self.docker_run(image, args, options=OpenStruct.new)
     # mounts = DockerJockey.docker_host[]
+    if !image.include? ':'
+      image = image + ":latest" # was getting "No such image" error without this
+    end
     DockerJockey.logger.debug("docker_exec args: #{args.inspect}")
     cmd = args.is_a?(String) ? ['sh', '-c', "#{args}"] : args
     coptions = {
@@ -33,12 +36,18 @@ module DockerJockey
               #  "BAZ=quux"
       #  ],
       'WorkingDir' => '/app',
-      "HostConfig" => {
-        'VolumesFrom': [DockerJockey.docker_host['Name']],
-        'Binds': DockerJockey.docker_host['HostConfig']['Binds'],
-        # 'PortBindings': DockerJockey.docker_host['HostConfig']['PortBindings'],
-      },
+      'HostConfig' => {},
     }
+    if DockerJockey.docker_host
+      # Dind version
+      coptions["HostConfig"]['VolumesFrom'] = [DockerJockey.docker_host['Name']]
+      coptions["HostConfig"]['Binds'] = DockerJockey.docker_host['HostConfig']['Binds']
+      # 'PortBindings': DockerJockey.docker_host['HostConfig']['PortBindings'],
+    else
+      coptions['Volumes'] = { '/app' => {} }
+      coptions["HostConfig"]['Binds'] = ["#{Dir.pwd}:/app"]
+    end
+
     if options.env_vars && options.env_vars.length > 0
       coptions['Env'] = options.env_vars
     end
@@ -57,8 +66,24 @@ module DockerJockey
     if !Docker::Image.exist?(image)
       puts "Image #{image} doesn't exist, pulling..."
       # Pull image to make sure we have it.
-      image = Docker::Image.create('fromImage' => image)
+      di = Docker::Image.create('fromImage' => image)
+      # Temporary hack until docker gem updated: https://github.com/swipely/docker-api/issues/369
+      # begin
+      #   Docker::Image.create('fromImage' => image_name) do |info|
+      #     yield info if block_given?
+      #   end
+      # rescue Docker::Error::NotFoundError => e
+      #   # see: https://github.com/swipely/docker-api/issues/369
+      #   # as long as this is not fixed we need to re-check on our own
+      #   # on docker-engines >= 1.10
+      #   if Gem::Version.new(Docker.version['Version']) >= Gem::Version.new('1.10.0')
+      #     Docker::Image.get(image_name)
+      #   else
+      #     raise e
+      #   end
+      # end
     end
+    # END HACK
 
     # Now fire it up
     container = Docker::Container.create(coptions)

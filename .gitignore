@@ -1,3 +1,7 @@
 bundle/
 .bundle/
 dj.secrets.json
+
+*.gem
+
+tmp.rb
