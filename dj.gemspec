@@ -1,7 +1,7 @@
 require_relative "lib/version"
 
 Gem::Specification.new do |s|
-  s.name        = 'dj2' # temporary
+  s.name        = 'dj' # temporary
   s.version     = DockerJockey::VERSION
   s.date        = '2010-04-28'
   s.summary     = "Docker Jockey"
